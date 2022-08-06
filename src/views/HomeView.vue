@@ -1,18 +1,31 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <Person
+      v-for="person in people"
+      :key="person.id.value"
+      :personInfo="person"
+    />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import Person from "@/components/Person.vue";
 
 export default {
   name: "HomeView",
   components: {
-    HelloWorld,
+    Person,
+  },
+  data() {
+    return {
+      people: [],
+    };
+  },
+  mounted() {
+    fetch("https://randomuser.me/api/?results=10").then((res) =>
+      res.json().then((json) => (this.people = json.results))
+    );
   },
 };
 </script>
