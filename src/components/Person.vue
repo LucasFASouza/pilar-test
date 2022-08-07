@@ -5,7 +5,9 @@
     </th>
     <th class="p-3 font-light">{{ personInfo.gender }}</th>
     <th class="p-3 font-light">{{ personInfo.dob.date.split("T")[0] }}</th>
-    <th class="p-3 font-light">No actions yet</th>
+    <th class="p-3 font-light">
+      <button class="underline">Open Details</button>
+    </th>
   </tr>
 </template>
 
