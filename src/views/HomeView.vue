@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col mx-96">
     <input
+      v-model="searchNameTextValue"
       type="text"
       placeholder="Search user"
       class="border-2 my-5 focused:border-blue"
@@ -17,7 +18,7 @@
       </thead>
       <thead>
         <Person
-          v-for="person in this.people"
+          v-for="person in this.filteredPeople"
           :key="person.id.value"
           :personInfo="person"
         />
@@ -42,6 +43,7 @@ export default {
     return {
       people: [],
       nextPage: 1,
+      searchNameTextValue: "",
     };
   },
   methods: {
@@ -59,6 +61,28 @@ export default {
   },
   mounted() {
     this.api(this.nextPage);
+  },
+  computed: {
+    filteredPeople() {
+      function compare(a, b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+
+        return 0;
+      }
+
+      let people = this.people.filter((person) => {
+        return (
+          person.name.first
+            .toLowerCase()
+            .indexOf(this.searchNameTextValue.toLowerCase()) != -1
+        );
+      });
+
+      people.sort(compare);
+
+      return people;
+    },
   },
 };
 </script>
