@@ -1,6 +1,12 @@
 <template>
   <div class="flex flex-col mx-96">
-    <table class="table-auto my-6">
+    <input
+      type="text"
+      placeholder="Search user"
+      class="border-2 my-5 focused:border-blue"
+    />
+
+    <table class="table-auto my-3">
       <thead class="border-2">
         <tr>
           <th class="p-4">Name</th>
@@ -11,7 +17,7 @@
       </thead>
       <thead>
         <Person
-          v-for="person in people"
+          v-for="person in this.people"
           :key="person.id.value"
           :personInfo="person"
         />
