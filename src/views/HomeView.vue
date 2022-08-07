@@ -18,8 +18,8 @@
       </thead>
       <thead>
         <Person
-          v-for="person in this.filteredPeople"
-          :key="person.id.value"
+          v-for="person in filteredPeople"
+          :key="person.login.username"
           :personInfo="person"
         />
       </thead>
@@ -41,7 +41,6 @@ export default {
   },
   data() {
     return {
-      people: [],
       nextPage: 1,
       searchNameTextValue: "",
     };
@@ -53,7 +52,9 @@ export default {
       ).then((res) =>
         res
           .json()
-          .then((json) => this.people.push.apply(this.people, json.results))
+          .then((json) =>
+            this.$store.state.people.push.apply(this.people, json.results)
+          )
       );
 
       this.nextPage = this.nextPage + 1;
@@ -63,6 +64,9 @@ export default {
     this.api(this.nextPage);
   },
   computed: {
+    people() {
+      return this.$store.state.people;
+    },
     filteredPeople() {
       function compare(a, b) {
         if (a.name < b.name) return -1;
@@ -71,7 +75,7 @@ export default {
         return 0;
       }
 
-      let people = this.people.filter((person) => {
+      let people = this.$store.state.people.filter((person) => {
         return (
           person.name.first
             .toLowerCase()

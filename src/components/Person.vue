@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "SomethingElse",
+  name: "Person",
   props: ["personInfo"],
 };
 </script>
