@@ -18,7 +18,7 @@
       </thead>
       <tbody>
         <Person
-          v-for="person in this.$store.state.allPeople"
+          v-for="person in this.search()"
           :key="person.id"
           :personInfo="person"
         />
@@ -47,6 +47,23 @@ export default {
   methods: {
     load() {
       this.$store.dispatch("loadPeople");
+    },
+    search() {
+      console.log("searching");
+      function compare(a, b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }
+      let people = this.$store.state.allPeople.filter((person) => {
+        return (
+          person.completeName
+            .toLowerCase()
+            .indexOf(this.searchNameTextValue.toLowerCase()) != -1
+        );
+      });
+      people.sort(compare);
+      return people;
     },
   },
   mounted() {
