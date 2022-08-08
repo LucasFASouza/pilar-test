@@ -16,13 +16,13 @@
           <th class="p-4">Actions</th>
         </tr>
       </thead>
-      <thead>
+      <tbody>
         <Person
           v-for="person in this.$store.state.allPeople"
           :key="person.id"
           :personInfo="person"
         />
-      </thead>
+      </tbody>
     </table>
 
     <button class="p-5 border-2 xl:mx-64 my-6 rounded-2xl" @click="load()">

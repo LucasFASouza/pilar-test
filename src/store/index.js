@@ -1,9 +1,15 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  plugins: [
+    createPersistedState({
+      storage: window.sessionStorage,
+    }),
+  ],
   state: {
     peoplePage: [],
     allPeople: [],
@@ -34,12 +40,14 @@ export default new Vuex.Store({
         filteredPerson["id"] = person.login.username;
         filteredPerson[
           "location"
-        ] = `${person.location.street.name} ${person.location.street.number}, ${person.location.postcode}, ${person.location.city} - ${person.location.state}, ${person.location.country}`;
-        filteredPerson["email"] = person.login.email;
-        filteredPerson["phone"] = person.login.phone;
-        filteredPerson["nat"] = person.login.nat;
+        ] = `${person.location.street.name} ${person.location.street.number}, ${person.location.city} - ${person.location.state}, ${person.location.country}`;
+        filteredPerson["email"] = person.email;
+        filteredPerson["phone"] = person.phone;
+        filteredPerson["nat"] = person.nat;
         filteredPerson["picture"] = person.picture.medium;
-
+        filteredPerson[
+          "url"
+        ] = `http://localhost:8080/details/${person.login.username}`;
         response.push(filteredPerson);
       });
       return response;
