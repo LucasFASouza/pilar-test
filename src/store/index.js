@@ -5,12 +5,14 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    people: [],
+    peoplePage: [],
+    allPeople: [],
+    nextPage: 1,
   },
   getters: {
-    filterPeople: (state) => (search) => {
-      var cleanPeople = [];
-      state.people.forEach((person) => {
+    cleanResponse(state) {
+      var response = [];
+      state.peoplePage.forEach((person) => {
         let filteredPerson = {
           completeName: "",
           gender: "",
@@ -27,7 +29,6 @@ export default new Vuex.Store({
         filteredPerson[
           "completeName"
         ] = `${person.name.first} ${person.name.last}`;
-        console.log(filteredPerson);
         filteredPerson["gender"] = person.gender;
         filteredPerson["dob"] = person.dob.date.split("T")[0];
         filteredPerson["id"] = person.login.username;
@@ -39,37 +40,34 @@ export default new Vuex.Store({
         filteredPerson["nat"] = person.login.nat;
         filteredPerson["picture"] = person.picture.medium;
 
-        console.log(filteredPerson);
-        cleanPeople.push(filteredPerson);
+        response.push(filteredPerson);
       });
-
-      function compare(a, b) {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-
-        return 0;
-      }
-
-      let filteredPeople = cleanPeople.filter((person) => {
-        return (
-          person.completeName.toLowerCase().indexOf(search.toLowerCase()) != -1
-        );
-      });
-
-      filteredPeople.sort(compare);
-
-      return state.people;
+      return response;
     },
   },
   mutations: {
-    addPeople(state, payload) {
-      state.people.push.apply(state.people, payload.newPeople);
+    addPeoplePage(state, newPeople) {
+      state.peoplePage = newPeople;
+    },
+    addAllPeople(state, newPeople) {
+      state.allPeople = [...state.allPeople, ...newPeople];
+      state.nextPage++;
     },
   },
   actions: {
-    loadPeople(context) {
-      
-    }
+    async loadPeople({ commit, getters }) {
+      const page = this.state.nextPage;
+      const response = await fetch(
+        `https://randomuser.me/api/?page=${page}&results=50&seed=easterEgg`
+      );
+      const people = await response.json();
+
+      commit("addPeoplePage", people.results);
+      const cleanedPeople = getters.cleanResponse;
+      commit("addAllPeople", cleanedPeople);
+
+      return this.state.allPeople;
+    },
   },
   modules: {},
 });
